@@ -9,13 +9,13 @@ using Xunit.Abstractions;
 
 namespace cross_platform_test_uiautomation
 {
-    public class Day3AppUITests : IDisposable
+    public class Day3AppUiTests : IDisposable
     {
         private WindowsDriver<WindowsElement> _driver;
         private readonly ITestOutputHelper _output;
         private const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
 
-        public Day3AppUITests(ITestOutputHelper output)
+        public Day3AppUiTests(ITestOutputHelper output)
         {
             _output = output;
             // Start WinAppDriver
@@ -65,20 +65,38 @@ namespace cross_platform_test_uiautomation
         }
 
         [Fact]
-        public void ParticipantPage_RunTime_MemorizedPasswordNoCodeConnection()
+        public void ParticipantPage_ClickParticipantsTab_ShowsConnectedList()
         {
             var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
             deviceItem.Click();
             Thread.Sleep(3000);
 
-            var ParticipantIcon = _driver.FindElement(By.Name("Participants"));
-            ParticipantIcon.Click();
+            var participantIcon = _driver.FindElement(By.Name("Participants"));
+            participantIcon.Click();
             Thread.Sleep(1000);
-            ParticipantIcon.Click();
+            participantIcon.Click();
             Thread.Sleep(1000);
 
-            var ConnectedList = _driver.FindElementByAccessibilityId("ConnectedList");
-            Assert.True(ConnectedList.Displayed);
+            var connectedList = _driver.FindElementByAccessibilityId("ConnectedList");
+            Assert.True(connectedList.Displayed);
+        }
+
+        [Fact]
+        public void MorePage_ClickMoreTab_ShowWebViewAndDisplayPowerSettings()
+        {
+            var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
+            deviceItem.Click();
+            Thread.Sleep(3000);
+
+            var moreIcon = _driver.FindElement(By.Name("More"));
+            moreIcon.Click();
+            Thread.Sleep(1000);
+            moreIcon.Click();
+            Thread.Sleep(1000);
+            var webView = _driver.FindElementByName("WebView");
+            Assert.True(webView.Displayed);
+            var disPlayPower = _driver.FindElementByName("Display Power");
+            Assert.True(disPlayPower.Displayed);
         }
 
         public void Dispose()
