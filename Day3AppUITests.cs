@@ -6,6 +6,7 @@ using Xunit;
 using System.Diagnostics;
 using System.Threading;
 using Xunit.Abstractions;
+using OpenQA.Selenium.Support.UI;
 
 namespace cross_platform_test_uiautomation
 {
@@ -42,7 +43,7 @@ namespace cross_platform_test_uiautomation
         [Fact]
         public void AppLaunch_TapTabButtonFiveTimes_SettingsButtonShouldBeFocused()
         {
-            for (int i = 0; i <= 5; i++)
+            for (var i = 0; i <= 5; i++)
             {
                 _driver.SwitchTo().ActiveElement().SendKeys(Keys.Tab);
                 Thread.Sleep(500);
@@ -97,6 +98,28 @@ namespace cross_platform_test_uiautomation
             Assert.True(webView.Displayed);
             var disPlayPower = _driver.FindElementByName("Display Power");
             Assert.True(disPlayPower.Displayed);
+        }
+
+        [Fact]
+        public void PreferenceSetting_SetUpAndSaveUsername()
+        {
+
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            var userName = wait.Until(d => d.FindElement(By.Name("Username")));
+            userName.Click();
+            var inputBox = _driver.FindElementByAccessibilityId("AutoIdMeEntry");
+            inputBox.Clear();
+
+            // Wait until the input box is empty
+            wait.Until(d => inputBox.Text == "");
+            Assert.True(inputBox.Text == "");
+
+            inputBox.SendKeys("CLU-LT-TEST");
+            // Wait until the text is updated
+            wait.Until(d => inputBox.Text == "CLU-LT-TEST");
+
+            Assert.True(inputBox.Text == "CLU-LT-TEST");
         }
 
         public void Dispose()
