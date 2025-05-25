@@ -5,16 +5,19 @@ using System;
 using Xunit;
 using System.Diagnostics;
 using System.Threading;
+using Xunit.Abstractions;
 
 namespace cross_platform_test_uiautomation
 {
     public class Day3AppUITests : IDisposable
     {
         private WindowsDriver<WindowsElement> _driver;
+        private readonly ITestOutputHelper _output;
         private const string WindowsApplicationDriverUrl = "http://127.0.0.1:4723";
 
-        public Day3AppUITests()
+        public Day3AppUITests(ITestOutputHelper output)
         {
+            _output = output;
             // Start WinAppDriver
             Process.Start(@"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe");
             Thread.Sleep(3000);
@@ -28,14 +31,27 @@ namespace cross_platform_test_uiautomation
         }
 
         [Fact]
-        public void ClickLeaveButtonTest()
+        public void AppLaunch_SettingsBtnShouldBeFocused()
         {
-            var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
-            Assert.True(deviceItem.Displayed);
-            deviceItem.Click();
-            Thread.Sleep(5000);
-            var leaveBtn = _driver.FindElement(By.Name("Leave"));
-            Thread.Sleep(5000);
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
+            Thread.Sleep(3000);
+            var settingsPage = _driver.FindElement(By.Name("Settings"));
+            Assert.True(settingsPage.Displayed);
+        }
+
+        [Fact]
+        public void AppLaunch_TapTabButtonFiveTimes_SettingsButtonShouldBeFocused()
+        {
+            for (int i = 0; i <= 5; i++)
+            {
+                _driver.SwitchTo().ActiveElement().SendKeys(Keys.Tab);
+                Thread.Sleep(500);
+            }
+            
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
+            Thread.Sleep(3000);
+            var settingsPage = _driver.FindElement(By.Name("Settings"));
+            Assert.True(settingsPage.Displayed);
         }
 
         public void Dispose()
