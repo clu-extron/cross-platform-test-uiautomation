@@ -64,6 +64,23 @@ namespace cross_platform_test_uiautomation
             Assert.True(sharePage.Displayed);
         }
 
+        [Fact]
+        public void ParticipantPage_RunTime_MemorizedPasswordNoCodeConnection()
+        {
+            var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
+            deviceItem.Click();
+            Thread.Sleep(3000);
+
+            var ParticipantIcon = _driver.FindElement(By.Name("Participants"));
+            ParticipantIcon.Click();
+            Thread.Sleep(1000);
+            ParticipantIcon.Click();
+            Thread.Sleep(1000);
+
+            var ConnectedList = _driver.FindElementByAccessibilityId("ConnectedList");
+            Assert.True(ConnectedList.Displayed);
+        }
+
         public void Dispose()
         {
             _driver?.Quit();
