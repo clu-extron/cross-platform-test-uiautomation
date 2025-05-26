@@ -122,6 +122,59 @@ namespace cross_platform_test_uiautomation
             Assert.True(inputBox.Text == "CLU-LT-TEST");
         }
 
+        [Fact]
+        public void PreferenceSetting_SelectPreferedTheme()
+        {
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
+            Thread.Sleep(3000);
+            var preferences = _driver.FindElement(By.Name("Preferences"));
+            preferences.Click();
+            Thread.Sleep(3000);
+
+            string screenshotDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots", "theme");
+            Directory.CreateDirectory(screenshotDir); // Creates the directory if it doesn't exist
+            
+            var beforePath = Path.Combine(screenshotDir, "before.png");
+            var afterPath = Path.Combine(screenshotDir, "after.png");
+
+            // Delete old screenshots if they exist
+            if (File.Exists(beforePath)) File.Delete(beforePath);
+            if (File.Exists(afterPath)) File.Delete(afterPath);
+
+            var screenshot1 = ((ITakesScreenshot)_driver).GetScreenshot();
+            screenshot1.SaveAsFile(beforePath, ScreenshotImageFormat.Png);
+
+            var darkRadioBtn = _driver.FindElementByName("Dark");
+            darkRadioBtn.Click();
+            Thread.Sleep(3000);
+
+            var screenshot2 = ((ITakesScreenshot)_driver).GetScreenshot();
+            screenshot2.SaveAsFile(afterPath, ScreenshotImageFormat.Png);
+
+            // Introduce outside python script for further comparizon then assert
+            var psi = new ProcessStartInfo
+            {
+                FileName = "python",
+                Arguments = "compare_screenshots.py",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(psi)) 
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                _output.WriteLine(output);
+
+                // Assertion based on output content
+                Assert.True(
+                    output.Contains("Theme changed from Light to Dark."),
+                    "Expected theme change did not occur or was not detected."
+                );
+            }
+        }
+
         public void Dispose()
         {
             _driver?.Quit();
