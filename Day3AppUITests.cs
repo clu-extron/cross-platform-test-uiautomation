@@ -66,6 +66,69 @@ namespace cross_platform_test_uiautomation
         }
 
         [Fact]
+        public void SharePage_ShareOneImage()
+        {
+            var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
+            deviceItem.Click();
+            Thread.Sleep(3000);
+
+            for (var i = 0; i <= 5; i++)
+            {
+                _driver.SwitchTo().ActiveElement().SendKeys(Keys.Tab);
+                Thread.Sleep(500);
+            }
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
+            Thread.Sleep(3000);
+            var shareImage = _driver.FindElementByName("Share Image or Video");
+            shareImage.Click();
+            Thread.Sleep(3000);
+            var fileNameBox = _driver.FindElementByName("File name:");
+            Thread.Sleep(2000);
+            fileNameBox.SendKeys("extron.png");
+            Thread.Sleep(2000);
+            var openBtn = _driver.FindElementByName("Open");
+            openBtn.Click();
+            Thread.Sleep(3000);
+            var shareBtn = _driver.FindElementByName("SHARE");
+            shareBtn.Click();
+            Thread.Sleep(8000);
+
+            string screenshotDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "screenshots", "share");
+            Directory.CreateDirectory(screenshotDir); // Creates the directory if it doesn't exist
+
+            var filePath = Path.Combine(screenshotDir, "share.png");
+
+            // Delete old screenshots if they exist
+            if (File.Exists(filePath)) File.Delete(filePath);
+
+            var screenshot = ((ITakesScreenshot)_driver).GetScreenshot();
+            screenshot.SaveAsFile(filePath, ScreenshotImageFormat.Png);
+
+            // Introduce outside python script for further comparizon then assert
+            var psi = new ProcessStartInfo
+            {
+                FileName = "python",
+                Arguments = "shared_image.py",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using (var process = Process.Start(psi))
+            {
+                string output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                _output.WriteLine(output);
+
+                // Assertion based on output content
+                Assert.True(
+                    output.Contains("The Image is shared successfully"),
+                    "Expected Image was not detected."
+                );
+            }
+        }
+
+        [Fact]
         public void ParticipantPage_ClickParticipantsTab_ShowsConnectedList()
         {
             var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
@@ -155,7 +218,7 @@ namespace cross_platform_test_uiautomation
             var psi = new ProcessStartInfo
             {
                 FileName = "python",
-                Arguments = "compare_screenshots.py",
+                Arguments = "compare_themes.py",
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
                 CreateNoWindow = true
