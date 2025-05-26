@@ -32,6 +32,28 @@ namespace cross_platform_test_uiautomation
         }
 
         [Fact]
+        public void Add_NewDevice_ToDeviceList()
+        {
+            var addDeviceBtn = _driver.FindElementByName("ADD DEVICE");
+            addDeviceBtn.Click();
+            Thread.Sleep(1000);
+            _driver.SwitchTo().ActiveElement().SendKeys("10.113.159.12");
+            Thread.Sleep(500);
+            _driver.FindElementByName("Next").Click();
+            Thread.Sleep(1000);
+            _driver.SwitchTo().ActiveElement().SendKeys("2");
+            Thread.Sleep(500);
+            _driver.FindElementByName("Next").Click();
+            Thread.Sleep(1000);
+            _driver.SwitchTo().ActiveElement().SendKeys("2222");
+            Thread.Sleep(500);
+            _driver.FindElementByName("Connect").Click();
+            Thread.Sleep(2000);
+            var sharePage = _driver.FindElement(By.Name("Share"));
+            Assert.True(sharePage.Displayed);
+        }
+
+        [Fact]
         public void AppLaunch_SettingsBtnShouldBeFocused()
         {
             _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
@@ -70,7 +92,7 @@ namespace cross_platform_test_uiautomation
         {
             var deviceItem = _driver.FindElement(By.Name("ShareLink-Pro-16-45-2C"));
             deviceItem.Click();
-            Thread.Sleep(3000);
+            Thread.Sleep(10000);
 
             for (var i = 0; i <= 5; i++)
             {
@@ -82,9 +104,10 @@ namespace cross_platform_test_uiautomation
             var shareImage = _driver.FindElementByName("Share Image or Video");
             shareImage.Click();
             Thread.Sleep(3000);
-            var fileNameBox = _driver.FindElementByName("File name:");
-            Thread.Sleep(2000);
-            fileNameBox.SendKeys("extron.png");
+            //var fileNameBox = _driver.FindElementByName("File name:");
+            //fileNameBox.Clear();
+            //fileNameBox.SendKeys("extron.png");
+            _driver.SwitchTo().ActiveElement().SendKeys("extron.png");
             Thread.Sleep(2000);
             var openBtn = _driver.FindElementByName("Open");
             openBtn.Click();
@@ -168,19 +191,19 @@ namespace cross_platform_test_uiautomation
         {
 
             _driver.SwitchTo().ActiveElement().SendKeys(Keys.Space);
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
-            var userName = wait.Until(d => d.FindElement(By.Name("Username")));
+            Thread.Sleep(3000);
+            var userName = _driver.FindElement(By.Name("Username"));
             userName.Click();
             var inputBox = _driver.FindElementByAccessibilityId("AutoIdMeEntry");
             inputBox.Clear();
 
             // Wait until the input box is empty
-            wait.Until(d => inputBox.Text == "");
+            Thread.Sleep(3000);
             Assert.True(inputBox.Text == "");
 
             inputBox.SendKeys("CLU-LT-TEST");
             // Wait until the text is updated
-            wait.Until(d => inputBox.Text == "CLU-LT-TEST");
+            Thread.Sleep(3000);
 
             Assert.True(inputBox.Text == "CLU-LT-TEST");
         }
