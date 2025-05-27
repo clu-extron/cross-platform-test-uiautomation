@@ -11,24 +11,7 @@ This repository contains a C#-based cross-platform UI automation testing framewo
 
 
 ## Project Structure
-```
-cross-platform-test-uiautomation/
-├── bin/
-│   └── Debug/
-│       └── net8.0/
-|           └── compare_themes.py
-|           └── shared_image.py
-│           └── screenshots/
-|               └── share/
-│               |   ├── share.png
-│               |   └── extron.png
-│               └── theme/
-│                   ├── before.png
-│                   └── after.png
-├── Day3AppUiTests.cs
-├── cross-platform-test-uiautomation.csproj
-└── README.md
-```
+![Project Structure](./assets/project_structure.png)
 
 ## Getting Started
 ### Prerequisites
