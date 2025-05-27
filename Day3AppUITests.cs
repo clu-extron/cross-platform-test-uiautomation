@@ -104,13 +104,9 @@ namespace cross_platform_test_uiautomation
             var shareImage = _driver.FindElementByName("Share Image or Video");
             shareImage.Click();
             Thread.Sleep(3000);
-            //var fileNameBox = _driver.FindElementByName("File name:");
-            //fileNameBox.Clear();
-            //fileNameBox.SendKeys("extron.png");
             _driver.SwitchTo().ActiveElement().SendKeys("extron.png");
             Thread.Sleep(2000);
-            var openBtn = _driver.FindElementByName("Open");
-            openBtn.Click();
+            _driver.SwitchTo().ActiveElement().SendKeys(Keys.Enter);
             Thread.Sleep(3000);
             var shareBtn = _driver.FindElementByName("SHARE");
             shareBtn.Click();
